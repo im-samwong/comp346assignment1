@@ -15,7 +15,7 @@ import java.util.InputMismatchException;
  * @author Kerly Titus
  */
 
-public class Client { 
+public class Client extends Thread{ 
     
     private static int numberOfTransactions;   		/* Number of transactions to process */
     private static int maxNbTransactions;      		/* Maximum number of transactions */
@@ -214,5 +214,17 @@ public class Client {
     	long sendClientStartTime, sendClientEndTime, receiveClientStartTime, receiveClientEndTime;
     
     	/* Implement here the code for the run method ... */
+        if(getClientOperation() == "sending"){
+            sendClientStartTime = System.nanoTime();
+            sendTransactions();
+            sendClientEndTime = System.nanoTime();
+        }
+
+        if(getClientOperation() == "receiving"){
+            receiveClientStartTime = System.nanoTime();
+            receiveTransactions(transact);
+            receiveClientEndTime = System.nanoTime();
+        }
+
     }
 }
