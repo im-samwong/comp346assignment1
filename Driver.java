@@ -1,3 +1,4 @@
+import java.lang.runtime.ObjectMethods;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -40,9 +41,16 @@ public class Driver {
         System.out.println(objClientReceive.getPriority());
 
         while(objNetwork.isAlive()){
+            objNetwork.yield();
             if(objNetwork.getInBufferStatus() == "full"){
                 objClientSend.yield();
-                System.out.println("Yielding");
+                System.out.println("Send Yielding");
+            }
+            if(objNetwork.getOutBufferStatus() == "empty"){
+                objClientReceive.yield();
+            }
+            if(objNetwork.getInBufferStatus() == "empty"){
+                objServer.yield();
             }
             if(objNetwork.getOutBufferStatus() == "full"){
                 objServer.yield();

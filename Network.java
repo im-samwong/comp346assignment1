@@ -557,6 +557,12 @@ public class Network extends Thread{
     	while (true)
     	{
 		/* Implement here the code for the run method ... */
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
             if(this.getClientConnectionStatus() == "idle" && this.getServerConnectionStatus() == "idle"){
                 System.out.println("Network connection closing.");
                 break;

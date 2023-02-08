@@ -222,6 +222,7 @@ public class Client extends Thread{
 
         if(getClientOperation() == "receiving"){
             receiveClientStartTime = System.nanoTime();
+            
             receiveTransactions(transact);
             receiveClientEndTime = System.nanoTime();
         }
