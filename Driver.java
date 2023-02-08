@@ -11,7 +11,7 @@
  */
 public class Driver {
 
-    public static boolean debugging = true;
+    public static boolean debugging = false;
     /** 
      * main class
      * @param args the command line arguments
@@ -32,35 +32,55 @@ public class Driver {
         Client objClientSend = new Client("sending");
         Client objClientReceive = new Client("receiving");
 
-
         // objServer.join();
 
         objClientSend.start();
+        // objClientSend.join();
+
         objClientReceive.start();
 
-        long millis = System.currentTimeMillis();
-        while(true)
-        {
-            if(System.currentTimeMillis() - millis > 5)
-                System.exit(0);
-        }
 
 
-        // try {
-        //     objServer.join();
-        //     objNetwork.join();
-        //     objSend.join();
-        //     objReceive.join();
-        // } catch (InterruptedException e) {
-        //     // TODO Auto-generated catch block
-        //     e.printStackTrace();
+        objClientSend.join();
+        objClientReceive.join();
+        
+        
+        objNetwork.disconnect(objNetwork.getClientIP());
+
+
+        objServer.join();
+
+
+        objNetwork.disconnect(objNetwork.getServerIP());
+
+        // objServer.join();
+
+        // objNetwork.disconnect(objNetwork.getServerIP());
+        
+        // long millis = System.currentTimeMillis();
+        // while(true)
+        // {
+        //     if(System.currentTimeMillis() - millis > 500)
+        //         System.exit(0);
         // }
 
-        //network
-        //network receive transaction from client (incomingpacket)
-        //network send transaction to client (outgoingpacket)
-
-        //client
+        
+        
+        // try {
+            //     objServer.join();
+            //     objNetwork.join();
+            //     objSend.join();
+            //     objReceive.join();
+            // } catch (InterruptedException e) {
+                //     // TODO Auto-generated catch block
+                //     e.printStackTrace();
+                // }
+                
+                //network
+                //network receive transaction from client (incomingpacket)
+                //network send transaction to client (outgoingpacket)
+                
+                //client
         //send
         //client transfer to network, yield if buffer full (incoming)
         //receive

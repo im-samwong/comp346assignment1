@@ -194,7 +194,10 @@ public class Server extends Thread{
          { 
         	 while( (objNetwork.getInBufferStatus().equals("empty")))
              {
-                Thread.yield();
+                if(!objNetwork.getClientConnectionStatus().equals("disconnected"))
+                    Thread.yield();
+                else
+                    break;
              }  /* Alternatively, busy-wait until the network input buffer is available */
         	 
         	 if (!objNetwork.getInBufferStatus().equals("empty"))
@@ -246,6 +249,7 @@ public class Server extends Thread{
         		 setNumberOfTransactions( (getNumberOfTransactions() +  1) ); 	/* Count the number of transactions processed */
         	 }
          }
+
          if(Driver.debugging)
          System.out.println("\n DEBUG : Server.processTransactions() - " + getNumberOfTransactions() + " accounts updated");
               
@@ -320,11 +324,15 @@ public class Server extends Thread{
     	System.out.println("\n DEBUG : Server.run() - starting server thread " + objNetwork.getServerConnectionStatus());
     	serverStartTime = System.currentTimeMillis();
     	/* Implement the code for the run method */
-        if(objNetwork.getInBufferStatus().equals("empty"))
-            processTransactions(trans);
-        serverEndTime = System.currentTimeMillis();
-        System.out.println("\n Terminating server thread - " + " Running time " + (serverEndTime - serverStartTime) + " milliseconds");
+        // if(objNetwork.getInBufferStatus().equals("empty"))
+            
+        processTransactions(trans);
 
+        serverEndTime = System.currentTimeMillis();
+        System.out.println("\nTerminating server thread - " + " Running time " + (serverEndTime - serverStartTime) + " milliseconds");
+
+
+        return;
         //objNetwork.disconnect(objNetwork.getServerIP());
     }
 }
