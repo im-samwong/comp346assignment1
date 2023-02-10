@@ -225,27 +225,26 @@ public class Client extends Thread{
     	/* Implement here the code for the run method ... */
         if(clientOperation.equals("sending"))
         {
+            if(Driver.debugging)
             System.out.println("\n DEBUG : Client.run() - starting client sending thread connected");
             sendClientStartTime = System.currentTimeMillis();
             sendTransactions();
             sendClientEndTime = System.currentTimeMillis();
 
             System.out.println("\nTerminating client sending thread - Running time "+ (sendClientEndTime-sendClientStartTime) + " milliseconds");
-            System.out.println("--------------------------------------------------------------------------------------------------");
-
-            return;
+            // return;
         }
 
         else
         {
+            if(Driver.debugging)
             System.out.println("\n DEBUG : Client.run() - starting client receiving thread connected");
             receiveClientStartTime = System.currentTimeMillis();
             receiveTransactions(transact);
             receiveClientEndTime = System.currentTimeMillis();
 
             System.out.println("\nTerminating client receiving thread - Running time "+ (receiveClientEndTime-receiveClientStartTime) + " milliseconds");
-            System.out.println("--------------------------------------------------------------------------------------------------");
-            return;
+            // return;
         }
 
         
