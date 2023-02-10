@@ -11,7 +11,7 @@
  */
 public class Driver {
 
-    public static boolean debugging = false;
+    public static boolean debugging = true;
     /** 
      * main class
      * @param args the command line arguments
