@@ -9,7 +9,7 @@
  *
  * @author Kerly Titus
  */
-public class Network {
+public class Network extends Thread{
     
     private static int maxNbPackets;                           /* Maximum number of simultaneous transactions handled by the network buffer */
     private static int inputIndexClient, inputIndexServer, outputIndexServer, outputIndexClient;                   /* Network buffer indices for accessing the input buffer (inputIndexClient, outputIndexServer) and output buffer (inputIndexServer, outputIndexClient) */
@@ -362,8 +362,9 @@ public class Network {
             inComingPacket[inputIndexClient].setTransactionBalance(inPacket.getTransactionBalance());
             inComingPacket[inputIndexClient].setTransactionError(inPacket.getTransactionError());
             inComingPacket[inputIndexClient].setTransactionStatus("transferred");
-            
+            if(Driver.debugging)
             System.out.println("\n DEBUG : Network.send() - index inputIndexClient " + inputIndexClient);
+            if(Driver.debugging)
             System.out.println("\n DEBUG : Network.send() - account number " + inComingPacket[inputIndexClient].getAccountNumber());
             
             
@@ -372,7 +373,7 @@ public class Network {
             if (getinputIndexClient() == getoutputIndexServer())
             {	
             	setInBufferStatus("full");
-            
+                if(Driver.debugging)
             	System.out.println("\n DEBUG : Network.send() - inComingBuffer status " + getInBufferStatus());
             }
             else
@@ -394,8 +395,9 @@ public class Network {
             outPacket.setTransactionBalance(outGoingPacket[outputIndexClient].getTransactionBalance());
             outPacket.setTransactionError(outGoingPacket[outputIndexClient].getTransactionError());
             outPacket.setTransactionStatus("done");
-            
+            if(Driver.debugging)
             System.out.println("\n DEBUG : Network.receive() - index outputIndexClient " + outputIndexClient);
+            if(Driver.debugging)
             System.out.println("\n DEBUG : Network.receive() - account number " + outPacket.getAccountNumber());
             
             setoutputIndexClient(((getoutputIndexClient( ) + 1) % getMaxNbPackets( ))); /* Increment the output buffer index for the client */
@@ -403,7 +405,7 @@ public class Network {
             if ( getoutputIndexClient( ) == getinputIndexServer( ))
             {	
             	setOutBufferStatus("empty");
-            
+                if(Driver.debugging)
             	System.out.println("\n DEBUG : Network.receive() - outGoingBuffer status " + getOutBufferStatus());
             }
             else
@@ -427,8 +429,9 @@ public class Network {
             outGoingPacket[inputIndexServer].setTransactionBalance(outPacket.getTransactionBalance());
             outGoingPacket[inputIndexServer].setTransactionError(outPacket.getTransactionError());
             outGoingPacket[inputIndexServer].setTransactionStatus("transferred");
-            
+            if(Driver.debugging)
             System.out.println("\n DEBUG : Network.transferOut() - index inputIndexServer " + inputIndexServer);
+            if(Driver.debugging)
             System.out.println("\n DEBUG : Network.transferOut() - account number " + outGoingPacket[inputIndexServer].getAccountNumber());
             
             setinputIndexServer(((getinputIndexServer() + 1) % getMaxNbPackets())); /* Increment the output buffer index for the server */
@@ -436,7 +439,7 @@ public class Network {
             if ( getinputIndexServer( ) == getoutputIndexClient( ))
             {
                 setOutBufferStatus("full");
-                
+                if(Driver.debugging)
                 System.out.println("\n DEBUG : Network.transferOut() - outGoingBuffer status " + getOutBufferStatus());
             }
             else
@@ -453,6 +456,7 @@ public class Network {
      */
          public boolean transferIn(Transactions inPacket)
         {
+            if(Driver.debugging)
 		System.out.println("\n DEBUG : Network.transferIn - account number " + inComingPacket[outputIndexServer].getAccountNumber());
             inPacket.setAccountNumber(inComingPacket[outputIndexServer].getAccountNumber());
             inPacket.setOperationType(inComingPacket[outputIndexServer].getOperationType());
@@ -460,8 +464,9 @@ public class Network {
             inPacket.setTransactionBalance(inComingPacket[outputIndexServer].getTransactionBalance());
             inPacket.setTransactionError(inComingPacket[outputIndexServer].getTransactionError());
             inPacket.setTransactionStatus("received");
-           
+            if(Driver.debugging)
             System.out.println("\n DEBUG : Network.transferIn() - index outputIndexServer " + outputIndexServer);
+            if(Driver.debugging)
             System.out.println("\n DEBUG : Network.transferIn() - account number " + inPacket.getAccountNumber());
             
            setoutputIndexServer(((getoutputIndexServer() + 1) % getMaxNbPackets()));	/* Increment the input buffer index for the server */
@@ -469,7 +474,7 @@ public class Network {
             if ( getoutputIndexServer( ) == getinputIndexClient( ))
             {
                 setInBufferStatus("empty");
-                
+                if(Driver.debugging)
                 System.out.println("\n DEBUG : Network.transferIn() - inComingBuffer status " + getInBufferStatus());
             }
             else
@@ -552,11 +557,20 @@ public class Network {
      */
     public void run()
     {	
+        if(Driver.debugging)
     	System.out.println("\n DEBUG : Network.run() - starting network thread");
     	
     	while (true)
     	{
 		/* Implement here the code for the run method ... */
+            if(clientConnectionStatus.equals("disconnected") && serverConnectionStatus.equals("disconnected"))
+            {
+                System.out.println("\nTerminating network thread - Client disconnected Server disconnected");
+                break;
+            }
+            
+            else
+                Thread.yield();
     	}    
     }
 }

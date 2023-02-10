@@ -15,7 +15,7 @@ import java.util.InputMismatchException;
  * @author Kerly Titus
  */
 
-public class Server {
+public class Server extends Thread{
   
 	int numberOfTransactions;         /* Number of transactions handled by the server */
 	int numberOfAccounts;             /* Number of accounts stored in the server */
@@ -154,7 +154,7 @@ public class Server {
             i++;
         }
         setNumberOfAccounts(i);			/* Record the number of accounts processed */
-        
+        if(Driver.debugging)
         System.out.println("\n DEBUG : Server.initializeAccounts() " + getNumberOfAccounts() + " accounts processed");
         
         inputStream.close( );
@@ -192,10 +192,17 @@ public class Server {
          /* Process the accounts until the client disconnects */
          while ((!objNetwork.getClientConnectionStatus().equals("disconnected")))
          { 
-        	 /* while( (objNetwork.getInBufferStatus().equals("empty"))); */  /* Alternatively, busy-wait until the network input buffer is available */
+        	 while( (objNetwork.getInBufferStatus().equals("empty")))
+             {
+                if(!objNetwork.getClientConnectionStatus().equals("disconnected"))
+                    Thread.yield();
+                else
+                    break;
+             }  /* Alternatively, busy-wait until the network input buffer is available */
         	 
         	 if (!objNetwork.getInBufferStatus().equals("empty"))
         	 {
+                if(Driver.debugging)
         		 System.out.println("\n DEBUG : Server.processTransactions() - transferring in account " + trans.getAccountNumber());
         		 
         		 objNetwork.transferIn(trans);                              /* Transfer a transaction from the network input buffer */
@@ -207,7 +214,7 @@ public class Server {
         			 newBalance = deposit(accIndex, trans.getTransactionAmount()); 
         			 trans.setTransactionBalance(newBalance);
         			 trans.setTransactionStatus("done");
-        			 
+        			 if(Driver.debugging)
         			 System.out.println("\n DEBUG : Server.processTransactions() - Deposit of " + trans.getTransactionAmount() + " in account " + trans.getAccountNumber());
         		 }
         		 else
@@ -217,7 +224,7 @@ public class Server {
         				 newBalance = withdraw(accIndex, trans.getTransactionAmount());
         				 trans.setTransactionBalance(newBalance);
         				 trans.setTransactionStatus("done");
-        				 
+        				 if(Driver.debugging)
         				 System.out.println("\n DEBUG : Server.processTransactions() - Withdrawal of " + trans.getTransactionAmount() + " from account " + trans.getAccountNumber());
         			 }
         			 else
@@ -227,19 +234,23 @@ public class Server {
                             newBalance = query(accIndex);
                             trans.setTransactionBalance(newBalance);
                             trans.setTransactionStatus("done");
-                            
+                            if(Driver.debugging)
                             System.out.println("\n DEBUG : Server.processTransactions() - Obtaining balance from account" + trans.getAccountNumber());
         				 } 
         		        		 
-        		 // while( (objNetwork.getOutBufferStatus().equals("full"))); /* Alternatively,  busy-wait until the network output buffer is available */
-                                                           
+        		 while((objNetwork.getOutBufferStatus().equals("full")))
+                 {
+                    Thread.yield();
+                 } /* Alternatively,  busy-wait until the network output buffer is available */
+                 if(Driver.debugging)                                         
         		 System.out.println("\n DEBUG : Server.processTransactions() - transferring out account " + trans.getAccountNumber());
         		 
         		 objNetwork.transferOut(trans);                            		/* Transfer a completed transaction from the server to the network output buffer */
         		 setNumberOfTransactions( (getNumberOfTransactions() +  1) ); 	/* Count the number of transactions processed */
         	 }
          }
-         
+
+         if(Driver.debugging)
          System.out.println("\n DEBUG : Server.processTransactions() - " + getNumberOfTransactions() + " accounts updated");
               
          return true;
@@ -309,13 +320,20 @@ public class Server {
     public void run()
     {   Transactions trans = new Transactions();
     	long serverStartTime, serverEndTime;
-
+        if(Driver.debugging)
     	System.out.println("\n DEBUG : Server.run() - starting server thread " + objNetwork.getServerConnectionStatus());
-    	
+    	serverStartTime = System.currentTimeMillis();
     	/* Implement the code for the run method */
-        
-        System.out.println("\n Terminating server thread - " + " Running time " + (serverEndTime - serverStartTime) + " milliseconds");
-           
+        // if(objNetwork.getInBufferStatus().equals("empty"))
+            
+        processTransactions(trans);
+
+        serverEndTime = System.currentTimeMillis();
+        System.out.println("\nTerminating server thread - " + " Running time " + (serverEndTime - serverStartTime) + " milliseconds");
+
+
+        // return;
+        //objNetwork.disconnect(objNetwork.getServerIP());
     }
 }
 
