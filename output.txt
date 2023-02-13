@@ -1,0 +1,61 @@
+
+Size = 10
+---------
+Client sending running time:	22
+Client receiving running time:	28
+Server running time:			44
+
+Size = 10
+---------
+Client sending running time:	15
+Client receiving running time:	21
+Server running time:			33
+
+Size = 10
+---------
+Client sending running time:	16
+Client receiving running time:	22
+Server running time:			32
+
+Size = 10
+---------
+Client sending running time:	16
+Client receiving running time:	45
+Server running time:			59
+
+Size = 10
+---------
+Client sending running time:	15
+Client receiving running time:	21
+Server running time:			33
+
+Size = 20
+---------
+Client sending running time:	10
+Client receiving running time:	21
+Server running time:			33
+
+Size = 20
+---------
+Client sending running time:	11
+Client receiving running time:	24
+Server running time:			35
+
+Size = 20
+---------
+Client sending running time:	10
+Client receiving running time:	23
+Server running time:			32
+
+Size = 20
+---------
+Client sending running time:	10
+Client receiving running time:	21
+Server running time:			35
+
+Size = 20
+---------
+Client sending running time:	12
+Client receiving running time:	25
+Server running time:			40
+

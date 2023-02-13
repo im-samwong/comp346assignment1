@@ -139,7 +139,7 @@ public class Client extends Thread{
         }
         setNumberOfTransactions(i);		/* Record the number of transactions processed */
         
-        if(Driver.debugging)
+        if(Driver.printDebug)
         System.out.println("\n DEBUG : Client.readTransactions() - " + getNumberOfTransactions() + " transactions processed");
         
         inputStream.close( );
@@ -164,7 +164,7 @@ public class Client extends Thread{
             }     /* Alternatively, busy-wait until the network input buffer is available */
                                              	
             transaction[i].setTransactionStatus("sent");   /* Set current transaction status */
-            if(Driver.debugging)
+            if(Driver.printDebug)
             System.out.println("\n DEBUG : Client.sendTransactions() - sending transaction on account " + transaction[i].getAccountNumber());
             
             objNetwork.send(transaction[i]);                            /* Transmit current transaction */
@@ -191,7 +191,7 @@ public class Client extends Thread{
              }  	/* Alternatively, busy-wait until the network output buffer is available */
                                                                         	
             objNetwork.receive(transact);                               	/* Receive updated transaction from the network buffer */
-            if(Driver.debugging)
+            if(Driver.printDebug)
             System.out.println("\n DEBUG : Client.receiveTransactions() - receiving updated transaction on account " + transact.getAccountNumber());
             
             System.out.println(transact);                               	/* Display updated transaction */    
@@ -225,29 +225,26 @@ public class Client extends Thread{
     	/* Implement here the code for the run method ... */
         if(clientOperation.equals("sending"))
         {
-            if(Driver.debugging)
+            if(Driver.printDebug)
             System.out.println("\n DEBUG : Client.run() - starting client sending thread connected");
             sendClientStartTime = System.currentTimeMillis();
             sendTransactions();
             sendClientEndTime = System.currentTimeMillis();
 
             System.out.println("\nTerminating client sending thread - Running time "+ (sendClientEndTime-sendClientStartTime) + " milliseconds");
-            // return;
+            Driver.stream.println("Client sending running time:\t" + (sendClientEndTime - sendClientStartTime));
         }
 
         else
         {
-            if(Driver.debugging)
+            if(Driver.printDebug)
             System.out.println("\n DEBUG : Client.run() - starting client receiving thread connected");
             receiveClientStartTime = System.currentTimeMillis();
             receiveTransactions(transact);
             receiveClientEndTime = System.currentTimeMillis();
 
             System.out.println("\nTerminating client receiving thread - Running time "+ (receiveClientEndTime-receiveClientStartTime) + " milliseconds");
-            // return;
+            Driver.stream.println("Client receiving running time:\t" + (receiveClientEndTime - receiveClientStartTime));
         }
-
-        
-        // objNetwork.disconnect(objNetwork.getClientIP());
     }
 }
