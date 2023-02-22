@@ -59,3 +59,7 @@ Client sending running time:	12
 Client receiving running time:	25
 Server running time:			40
 
+By just looking at the data that was provided and changing the buffer size from 10 to 20, it is hard to draw a conclusion and find the differences between the two scenarios because the 
+time differences are so minimal. In most cases, the time the client threads send and receive are shorter when the buffer max is 20 rather than 10. These time differences can also 
+be caused by many external factors that would differ from machine to machine because their different hardwares. However, in theory, because the buffer is bigger, the total amount of
+times a thread would have to yield would be less, thus making the whole process faster. In our case, our results do show this tendency.
