@@ -154,7 +154,7 @@ public class Server extends Thread{
             i++;
         }
         setNumberOfAccounts(i);			/* Record the number of accounts processed */
-        if(Driver.debugging)
+        if(Driver.printDebug)
         System.out.println("\n DEBUG : Server.initializeAccounts() " + getNumberOfAccounts() + " accounts processed");
         
         inputStream.close( );
@@ -202,7 +202,7 @@ public class Server extends Thread{
         	 
         	 if (!objNetwork.getInBufferStatus().equals("empty"))
         	 {
-                if(Driver.debugging)
+                if(Driver.printDebug)
         		 System.out.println("\n DEBUG : Server.processTransactions() - transferring in account " + trans.getAccountNumber());
         		 
         		 objNetwork.transferIn(trans);                              /* Transfer a transaction from the network input buffer */
@@ -214,7 +214,7 @@ public class Server extends Thread{
         			 newBalance = deposit(accIndex, trans.getTransactionAmount()); 
         			 trans.setTransactionBalance(newBalance);
         			 trans.setTransactionStatus("done");
-        			 if(Driver.debugging)
+        			 if(Driver.printDebug)
         			 System.out.println("\n DEBUG : Server.processTransactions() - Deposit of " + trans.getTransactionAmount() + " in account " + trans.getAccountNumber());
         		 }
         		 else
@@ -224,7 +224,7 @@ public class Server extends Thread{
         				 newBalance = withdraw(accIndex, trans.getTransactionAmount());
         				 trans.setTransactionBalance(newBalance);
         				 trans.setTransactionStatus("done");
-        				 if(Driver.debugging)
+        				 if(Driver.printDebug)
         				 System.out.println("\n DEBUG : Server.processTransactions() - Withdrawal of " + trans.getTransactionAmount() + " from account " + trans.getAccountNumber());
         			 }
         			 else
@@ -234,7 +234,7 @@ public class Server extends Thread{
                             newBalance = query(accIndex);
                             trans.setTransactionBalance(newBalance);
                             trans.setTransactionStatus("done");
-                            if(Driver.debugging)
+                            if(Driver.printDebug)
                             System.out.println("\n DEBUG : Server.processTransactions() - Obtaining balance from account" + trans.getAccountNumber());
         				 } 
         		        		 
@@ -242,7 +242,7 @@ public class Server extends Thread{
                  {
                     Thread.yield();
                  } /* Alternatively,  busy-wait until the network output buffer is available */
-                 if(Driver.debugging)                                         
+                 if(Driver.printDebug)                                         
         		 System.out.println("\n DEBUG : Server.processTransactions() - transferring out account " + trans.getAccountNumber());
         		 
         		 objNetwork.transferOut(trans);                            		/* Transfer a completed transaction from the server to the network output buffer */
@@ -250,7 +250,7 @@ public class Server extends Thread{
         	 }
          }
 
-         if(Driver.debugging)
+         if(Driver.printDebug)
          System.out.println("\n DEBUG : Server.processTransactions() - " + getNumberOfTransactions() + " accounts updated");
               
          return true;
@@ -320,7 +320,7 @@ public class Server extends Thread{
     public void run()
     {   Transactions trans = new Transactions();
     	long serverStartTime, serverEndTime;
-        if(Driver.debugging)
+        if(Driver.printDebug)
     	System.out.println("\n DEBUG : Server.run() - starting server thread " + objNetwork.getServerConnectionStatus());
     	serverStartTime = System.currentTimeMillis();
     	/* Implement the code for the run method */
@@ -330,7 +330,7 @@ public class Server extends Thread{
 
         serverEndTime = System.currentTimeMillis();
         System.out.println("\nTerminating server thread - " + " Running time " + (serverEndTime - serverStartTime) + " milliseconds");
-
+        Driver.stream.println("Server running time:\t\t\t" + (serverEndTime - serverStartTime) + "\n");
 
         // return;
         //objNetwork.disconnect(objNetwork.getServerIP());
